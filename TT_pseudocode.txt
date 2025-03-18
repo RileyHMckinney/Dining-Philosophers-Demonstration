@@ -1,0 +1,56 @@
+//Tournament-Tree Lock Pseudocode - Riley McKinney and Elden Deguia
+
+//Peterson's Algo for a Two-Thread Lock
+CLASS Petersonlock
+    SHARED ARRAY BOOLEAN flag[2] = {false, false}
+    SHARED INTEGER turn
+
+    FUNC Acquire(threadID)
+        flag[threadID] := true 
+        turn := 1 - threadID
+        while((flag[1 - threadID] EQUALS true) AND (turn NOT EQUAL threadID)) do
+        begin 
+        .
+        .
+        end while
+
+    FUNC Release(threadID)
+        flag[threadID] := false
+
+CLASS TournamentTree:
+    SHARED ARRAY of Petersonlock lock //array of internal node locks in tree
+    SHARED ARRAY of positions position[] //stores the first lock checked by each thread
+    SHARED INTEGER numThreads //total threads
+
+    FUNC FirstLock(threadID)
+        RETURN floor((threadID - 1) / 2) // First lock for each thread
+
+    FUNC Initialize(N)
+        numThreads = N
+        lock[] ARRAY of size (N-1)
+        position[] ARRAY of size (N)
+        
+        For each threadID 0 to N-1
+            position[ThreadID] = firstLock(threadID) //initialize position arr
+
+    FUNC Acquire(threadID)
+        index = position[threadID]
+        STACK path //create a thread-local stack for the path
+
+        //recurse from the bottom up through the tree
+        while index >= 0
+        begin
+            lock[index].Acquire(threadID MOD 2) 
+            path.push(index)
+            index = (index - 1)/ 2 //Move up the tree
+        end while
+
+    FUNC Release(threadID)
+        //recurse from top down through the tree
+        while (path IS NOT EMPTY)
+        begin
+            index = path.pop()
+            lock[index].Release(threadID MOD 2)
+        end while
+
+            
