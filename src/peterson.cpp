@@ -1,28 +1,22 @@
 #include "peterson.h"
 
-struct timespec ts = {0, 1000}; 
-
-typedef struct {
-    atomic_bool flag[2];
-    atomic_int turn;
-} PetersonLock;
-
-void initialize(PetersonLock *lock){
-    atomic_store(&lock->flag[0], false);
-    atomic_store(&lock->flag[1], false);
-    atomic_store(&lock->turn, 0);
+//Initialize the lock
+PetersonLock::PetersonLock() {
+    flag[0] = false;
+    flag[1] = false;
+    turn = 0;
 }
 
-void aquire(PetersonLock *lock, int threadID){
+//Enter critical section
+void PetersonLock::acquire(int threadID) {
     int other = 1 - threadID;
-    atomic_store(&lock->flag[threadID], true);
-    atomic_store(&lock->turn, 1); 
+    flag[threadID] = true;
+    turn = other;
 
-    while(atomic_load(&lock->flag[threadID]) && atomic_load(&lock->turn) == other){
-        nanosleep(&ts, NULL);
-    }
+    while (flag[other] && turn == other);
 }
 
-void release(PetersonLock *lock, int threadID){
-    atomic_store(&lock->flag[threadID], false);
+// Release the lock (exit critical section)
+void PetersonLock::release(int threadID) {
+    flag[threadID] = false;
 }
