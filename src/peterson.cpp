@@ -7,7 +7,7 @@ PetersonLock::PetersonLock() {
     turn = 0;
 }
 
-//Enter critical section
+//Enter critical section, this "threadID" can only be 0 or 1!!!
 void PetersonLock::acquire(int threadID) {
     int other = 1 - threadID;
     flag[threadID] = true;

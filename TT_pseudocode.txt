@@ -1,4 +1,4 @@
-//Tournament-Tree Lock Pseudocode - Riley McKinney and Elden Deguia
+//Tournament-Tree Lock Pseudocode - Riley McKinney - rhm220001
 
 //Peterson's Algo for a Two-Thread Lock
 CLASS Petersonlock
