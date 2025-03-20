@@ -10,7 +10,7 @@ INCLUDE_DIR = include
 TARGET = dining_philo  # Renamed from 'program' to 'dining_philo'
 
 # List of source files
-SRCS = $(SRC_DIR)/main.cpp $(SRC_DIR)/peterson.cpp $(SRC_DIR)/tournament.cpp
+SRCS = $(SRC_DIR)/main.cpp $(SRC_DIR)/peterson.cpp $(SRC_DIR)/tournament.cpp $(SRC_DIR)/fine_grained.cpp
 
 # Convert source files (.cpp) into object files (.o)
 OBJS = $(SRCS:.cpp=.o)
