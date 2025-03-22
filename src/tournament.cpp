@@ -3,6 +3,8 @@
 #include <cmath>
 
 // Constructor with n threads, and correct number of locks
+//      Calling 'nextPowerOf2' ensures that the tournament works for 
+//       thread numbers that aren't a power of 2
 TournamentTreeLock::TournamentTreeLock(int n) 
     : numLocks(nextPowerOf2(n) - 1), locks(numLocks) {}
 
@@ -22,42 +24,43 @@ int TournamentTreeLock::nextPowerOf2(int n) {
 // Acquire lock sequence
 void TournamentTreeLock::acquire(int threadID) {
     int index = threadID;  // Zero-based thread index
-    int node = numLocks + index; // Convert to leaf position
+    //Convert thread index to its zero-indexed node number, starting from the root
+    int node = numLocks + index; 
 
-    if (false) {
-        std::cout << "Thread " << threadID << " starting acquire sequence...\n";
-    }
-
-    // Traverse up the tree, acquiring locks
+    // Traverse up the tree, acquiring locks until at root
     while (node > 0) {
+        //calculate the parent node
         int parent = getParent(node);
-        if (false) {
-            std::cout << "Thread " << threadID << " acquiring lock at node " << parent << std::endl;
-        }
-
-        locks[parent].acquire((node - 1) % 2); // Left child (0) or right child (1)
+        
+        //Aquire the parent lock, entering as 0 if left child, or 1 if right child
+        locks[parent].acquire((node - 1) % 2);
+        
+        //set the current node to its parent index after parent lock is aquired
         node = parent;
-    }
-
-    if (false) {
-        std::cout << "Thread " << threadID << " has acquired all necessary locks.\n";
     }
 }
 
 // Release lock sequence
 void TournamentTreeLock::release(int threadID) {
-    int node = 0;
-    int treeHeight = (int)std::log2(numLocks + 1);
+    int node = 0; //start at root
+    int treeHeight = (int)std::log2(numLocks + 1); //calcuate height of tree
 
     // Traverse top-down, releasing locks
     while (treeHeight > 0) {
         int leftChild = (node * 2) + 1;
         int rightChild = (node * 2) + 2;
 
+        //convert the threadID to binary, extract relevant digit from binary number
+        //  that indicates the direction of traversal
         int direction = (threadID >> (treeHeight - 1)) & 1;
 
+        //release the node in the correct direction (left = 0, right = 1)
         locks[node].release(direction);
+        
+        //
         node = (direction == 1) ? rightChild : leftChild;
+
+        //decrement remaining tree height
         treeHeight--;
     }
 }

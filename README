@@ -1,0 +1,6 @@
+NAMES OF GROUPMEMBERS: Riley McKinney - rhm220001
+HOW TO RUN PROGRAM: 
+1 - Execute the Makefile with 'make'
+2 - Execute the program with './dining_philo <integer>' where <integer> is
+    an integer value representing the number of philosophers
+3 - After running program, execute 'make clean' to delete the object and execuatable files

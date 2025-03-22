@@ -1,7 +1,11 @@
 #include "fine_grained.h"
 
+//Constructor
 FineGrainedLock::FineGrainedLock(int n) : locks(n), numLocks(n) {}
 
+//a thread attempts to aquire its neighboring locks
+//      - even threadIDs reach left first, and then right 
+//      - odd threadIDs reach right first and then left
 void FineGrainedLock::acquire(int threadID) {
     int left = threadID;
     int right = (threadID == 0) ? (numLocks - 1) : (threadID - 1);
@@ -16,6 +20,8 @@ void FineGrainedLock::acquire(int threadID) {
     }
 }
 
+//a thread releases its locks, left first and then right. 
+//      Order of release does not change the func of the program.
 void FineGrainedLock::release(int threadID) {
     int left = threadID;
     int right = (threadID == 0) ? (numLocks - 1) : (threadID - 1);
