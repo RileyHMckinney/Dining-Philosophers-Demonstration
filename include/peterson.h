@@ -7,6 +7,7 @@ using namespace std;
 
 class PetersonLock {
 private:
+    //variables are declared as atomic to avoid race conditions
     atomic<bool> flag[2];
     atomic<int> turn;
 
