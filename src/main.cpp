@@ -54,39 +54,74 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    //formatted print statement
-    cout << "|----------------------------------------------------------------------------|" << endl;
-    cout << "| Simulate the Dining Philosophers problem using the coarse-grained approach.|" << endl;
-    cout << "|----------------------------------------------------------------------------|" << endl;
-
-    // Create an isntance of the tournament lock with the specified number of threads
+    //create an instance of the lock with the specified number of threads
     TournamentTreeLock tournamentLock(numThreads);
-
-    // Launch threads
-    vector<thread> threads;
-    for (int i = 0; i < numThreads; i++) {
-        threads.push_back(thread(coarse_grained, i, ref(tournamentLock)));
-    }
-
-    // Join all threads
-    for (auto& t : threads) {
-        t.join();
-    }
-
-    //clear the threads before running next synchonization technique
-    threads.clear();
-
-    //formatted print statement
-    cout << "|--------------------------------------------------------------------------|" << endl;
-    cout << "| Simulate the Dining Philosophers problem using the fine-grained approach.|" << endl;
-    cout << "|--------------------------------------------------------------------------|" << endl;
-
-    //Create an instance of the FineGrainedLock class with the specified number of threads
     FineGrainedLock fineGrainedLock(numThreads);
+    vector<thread> threads;
 
-    //launch the threads on the same threads vector
-    for (int i = 0; i < numThreads; i++) {
-        threads.push_back(thread(fine_grained, i, ref(fineGrainedLock)));
+    //print user menu
+    char choice;
+    cout << "Which method do you want to test?\n";
+    cout << "A) Tournament Tree Approach (single iteration)\n";
+    cout << "B) Tournament Tree Approach (looped)\n";
+    cout << "C) Fine-Grained Approach (single iteration)\n";
+    cout << "D) Fine-Grained Approach (looped)\n";
+    cout << "Enter choice (A/B/C/D): ";
+    cin >> choice;
+
+    //start a switch case based on user selection:
+    switch(toupper(choice)){
+        //Tournament Tree single
+        case 'A':
+            cout << "|---------------------------------------------------------------|" << endl;
+            cout << "| Single iteration of Dining Philosophers problem Tree approach.|" << endl;
+            cout << "|---------------------------------------------------------------|" << endl;
+
+            //each philosopher thinks and eats ONE TIME
+            for (int i = 0; i < numThreads; i++) {
+                threads.push_back(thread(coarse_grained, i, ref(tournamentLock)));
+            }
+
+            break;
+        case 'B':
+            cout << "|---------------------------------------------------|" << endl;
+            cout << "| Loop of Dining Philosophers problem Tree approach.|" << endl;
+            cout << "|---------------------------------------------------|" << endl;
+
+            //each philosopher thinks and eats in an infinite loop
+            while(true){
+                for (int i = 0; i < numThreads; i++) {
+                    threads.push_back(thread(coarse_grained, i, ref(tournamentLock)));
+                }
+            }
+
+            break;
+        case 'C':
+            cout << "|-----------------------------------------------------------------------------|" << endl;
+            cout << "| Single iteration of Dining Philosophers problem using fine-grained approach.|" << endl;
+            cout << "|-----------------------------------------------------------------------------|" << endl;
+
+            //launch the threads on the same threads vector
+            for (int i = 0; i < numThreads; i++) {
+                threads.push_back(thread(fine_grained, i, ref(fineGrainedLock)));
+            }
+
+            break;
+        case 'D':
+            cout << "|-----------------------------------------------------------------------------|" << endl;
+            cout << "| Loop of Dining Philosophers problem using fine-grained approach.|" << endl;
+            cout << "|-----------------------------------------------------------------------------|" << endl;
+            
+            while(true){
+                for (int i = 0; i < numThreads; i++) {
+                    threads.push_back(thread(fine_grained, i, ref(fineGrainedLock)));
+                }
+            }
+
+            break;
+        default:
+            cerr << "Invalid choice.\n";
+            return 1;
     }
 
     // Join all threads
@@ -94,7 +129,6 @@ int main(int argc, char* argv[]) {
         t.join();
     }
 
-    cout << "All simulations have been completed.\n";
     return 0;
 }
 
