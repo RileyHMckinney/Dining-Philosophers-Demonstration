@@ -21,6 +21,3 @@ HOW TO RUN PROGRAM:
 POSTSCRIPT: Often, the printed output is garbled, as multiple threads are attempting to 
     print (or "think") at the same time. This is INTENTIONAL. The assignment specifies that this program was 
     not allowed to use built in locks, and thus the only locks are on when each thread is in the "eating" phase.
-
-    If there is any doubt about my ability to implement locks using built-in locks, 
-    please feel free to reach out to me.
